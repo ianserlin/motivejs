@@ -24,14 +24,14 @@ __HTML__
 
 <pre><code>
 
-<!doctype html>
-<html>
-	<head>
-		<title>Motivation</title>
-	</head>
-	<body>
-	</body>
-</html>
+&lt;!doctype html&gt;
+&lt;html&gt;
+	&lt;head&gt;
+		&lt;title&gt;Motivation&lt;/title&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+	&lt;/body&gt;
+&lt;/html&gt;
 
 </code></pre>
 
