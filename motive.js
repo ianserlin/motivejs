@@ -123,7 +123,7 @@ Motive.prototype.template = function(componentName, dataName, template, engine){
 // wire up an action
 Motive.prototype.action = function(componentName, eventName, callback){
 	var self = this;
-	$('body').on(eventName, this.references[componentName].selector, function(event){
+	this.$('body').on(eventName, this.references[componentName].selector, function(event){
 		if( callback ){
 			callback.call(self, event);
 		}
@@ -149,8 +149,8 @@ Motive.prototype.configure = function(config){
 		for( var key in this.templates ){
 			if( this.templates[key].match(/^#/) != null ){
 				var selector = this.templates[key];
-				this.templates[key] = $(selector).html();
-				$(selector).html('');
+				this.templates[key] = this.$(selector).html();
+				this.$(selector).html('');
 			}
 		}
 	}
