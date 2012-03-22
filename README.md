@@ -22,16 +22,14 @@ Example
 
 __HTML__
 
-<pre><code>
-&lt;!doctype html&gt;
+<pre><code>&lt;!doctype html&gt;
 &lt;html&gt;
 	&lt;head&gt;
 		&lt;title&gt;Motivation&lt;/title&gt;
 	&lt;/head&gt;
 	&lt;body&gt;
 	&lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
+&lt;/html&gt;</code></pre>
 
 __JS__
 
