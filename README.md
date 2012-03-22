@@ -23,7 +23,6 @@ Example
 __HTML__
 
 <pre><code>
-
 &lt;!doctype html&gt;
 &lt;html&gt;
 	&lt;head&gt;
@@ -32,7 +31,6 @@ __HTML__
 	&lt;body&gt;
 	&lt;/body&gt;
 &lt;/html&gt;
-
 </code></pre>
 
 __JS__
