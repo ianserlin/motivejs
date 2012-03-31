@@ -9,7 +9,8 @@ window.Todo = new Motive().configure({
 		todos: '\
 			{{^done}}\
 				<li class="item" data-todoid="{{id}}">\
-					<div class="view">\
+					<input type="text" class="edit" name="name" value="{{description}}"/>\
+					<div class="view" title="Double click to edit...">\
 						<input type="checkbox"/>\
 			{{/done}}\
 			{{#done}}\
@@ -77,6 +78,32 @@ window.Todo = new Motive().configure({
 				this.data.todos = this.data.todos; // this should be a refresh
 			}
 		},
+		'.item': {
+			dblclick: function(target){
+				if( !target.hasClass('done') ){
+					target.addClass('editing').find('input.edit').focus();
+				}
+			}
+		},
+		'input.edit': {
+			blur: function(target){
+				var li = target.closest('li')
+					todoID = li.attr('data-todoid');
+				li.removeClass('editing');
+				for( var i = 0; i < this.data.todos.length; i++ ){
+					if( this.data.todos[i].id == todoID ){
+						this.data.todos[i].description = target.val();
+						break;
+					}
+				}
+				this.data.todos = this.data.todos;
+			},
+			keyup: function(target, event){
+				if( event.which == 13 ){
+					target.blur();
+				}
+			}
+		},
 		clearCompletedButton: {
 			click: function(){
 				var todos = [];
@@ -110,6 +137,7 @@ window.Todo = new Motive().configure({
 })
 .init(function(){
 	this.uidCounter = 0;
+	this.data.todoCount = {count: 0};
 });
 
 });

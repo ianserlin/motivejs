@@ -66,7 +66,6 @@ Motive.prototype._generateNotifyFunction = function(dataName){
 // dynamize a variable
 Motive.prototype.manage = function(dataName, initialValue){
 	if( typeof dataName == 'string' && this.data.__lookupGetter__(dataName) == undefined ){
-		console.log( 'managing ', dataName, typeof this.data[dataName] );
 		this.data[dataName] 		= initialValue;
 		this.dataBindings[dataName] = [];
 		this.watch( this.data, dataName, this._generateNotifyFunction(dataName) );
