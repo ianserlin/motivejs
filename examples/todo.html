@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Motivational Todos</title>
+		<link rel="stylesheet" href="todo.css"/>
+		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+		<script src="http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js"></script>
+		<script src='../motive.js'></script>
+		<!-- <script src='doT.js'></script> -->
+		<script src='todo.js'></script>
+	</head>
+
+	<body>
+		<div id="views">
+			<div id="tasks">
+				<h1>Todos</h1>
+
+				<div id="new-task">
+					<input name="name" type="text" placeholder="What needs to be done?">
+				</div	>
+
+				<ul class="items">
+				</ul>
+
+				<footer>
+					<a href='#' class="clear">Clear completed</a>
+					<div class="count"><span class="countVal">0</span> left</div>
+				</footer>
+			</div>
+		</div>
+
+		<div id="credits">
+			Built on <a href="https://github.com/ianserlin/motivejs">Motive.js</a> by <a href="http://useful.io">Ian Serlin</a> for <a href="http://addyosmani.github.com/todomvc/">TodoMVC</a>.
+		</div>
+	</body>	
+	<!--
+	<body>
+		<div id='view'>
+			<h1>Todos</h1>
+			<input id='todoInput' type="text" placeholder='What needs to be done?'/>
+			<ul id='todos'></ul>
+			<div id='todoCount'/>
+		</div>
+	</body>
+	-->
+</html>
