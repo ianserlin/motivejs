@@ -1,4 +1,22 @@
 ////////////////////////////////////////////////////////////////////
+///////////////// Global functions
+////////////////////////////////////////////////////////////////////
+
+// function log(){
+// 	if( typeof console != 'undefined' ){
+// 		console.log.apply(this, arguments);
+// 	}
+// }
+
+function exists(thing){
+	return typeof thing != 'undefined';
+}
+
+function blank(string){
+	return typeof string == 'string' && string.length > 0;
+}
+
+////////////////////////////////////////////////////////////////////
 ///////////////// Motive IS JUST THE VIEW LOGIC
 ////////////////////////////////////////////////////////////////////
 
@@ -27,6 +45,9 @@ Motive.prototype.watch = function(target, prop, handler){
 		return newval;
 	},
 	setter = function (val) {
+		if( self.$.isArray(val) ){
+			val = self._extendArray(val, handler, self);
+		}
 		oldval = newval;
 		newval = val;
 		handler.call(target, prop, oldval, val, self);
@@ -109,7 +130,11 @@ Motive.prototype.template = function(componentName, dataName, template, engine){
 			engine: engine,
 			compiledTemplate: compiledTemplate,
 			redrawFunction: function(propertyName, oldValue, newValue){
-				component.html(compiledTemplate.render({ data: newValue }));
+				if( typeof compiledTemplate == 'function' ){
+					component.html(compiledTemplate({ data: newValue }));
+				}else{
+					component.html(compiledTemplate.render({ data: newValue }));
+				}
 			} 
 		};
 	this.templateSpecs[componentName] = templateSpec;
@@ -130,6 +155,72 @@ Motive.prototype.action = function(componentName, eventName, callback){
 	return this;
 };
 
+Motive.prototype._generateWrapperFunction = function(fn){
+	var self = this;
+	return function(){
+		fn.apply(self,arguments);
+	}
+};
+
+Motive.prototype._generatePropertyValue = function(extension){
+	var type = typeof extension,
+		value;
+	// console.log('got extension: ', type, extension);
+	switch(type){
+		case 'function':
+			value = this._generateWrapperFunction(extension);
+			break;
+		case 'number':
+		case 'string':
+		case 'boolean':
+			value = extension;
+			break;
+		case 'object':
+			value = {};
+			for( var key in extension ){
+				value[key] = this._generatePropertyValue(extension[key]);
+			}
+			break;
+	}
+	return value;
+};
+
+// tack on functions to a motive instance
+Motive.prototype.extend = function(extensions){
+	for( var primaryKey in extensions ){
+		this[primaryKey] = this._generatePropertyValue(extensions[primaryKey]);
+	}
+	return this;
+};
+
+// Allows operations performed on an array instance to trigger bindings
+Motive.prototype._extendArray = function(arr, callback, motive){
+	if (arr.__wasExtended === true) return;
+
+	function generateOverloadedFunction(target, methodName, self){
+		return function(){
+			var oldValue = Array.prototype.concat.apply(arr);
+			Array.prototype[methodName].apply(target, arguments);
+			target.updated(oldValue, motive);
+		};
+	} 
+	arr.updated = function(oldValue, self){
+		callback.call(this, 'items', oldValue, this, motive);
+	};
+	arr.concat 	= generateOverloadedFunction(arr, 'concat', motive);
+	arr.join	= generateOverloadedFunction(arr, 'join', motive);
+	arr.pop 	= generateOverloadedFunction(arr, 'pop', motive);
+	arr.push 	= generateOverloadedFunction(arr, 'push', motive);
+	arr.reverse = generateOverloadedFunction(arr, 'reverse', motive);
+	arr.shift 	= generateOverloadedFunction(arr, 'shift', motive);
+	arr.slice 	= generateOverloadedFunction(arr, 'slice', motive);
+	arr.sort 	= generateOverloadedFunction(arr, 'sort', motive);
+	arr.splice 	= generateOverloadedFunction(arr, 'splice', motive);
+	arr.unshift = generateOverloadedFunction(arr, 'unshift', motive);
+	arr.__wasExtended = true;
+	return arr;
+}
+
 // run an init function in a promise sort of way
 Motive.prototype.init = function(callback){
 	// this is pretty worthless until it's a real promise
@@ -140,6 +231,10 @@ Motive.prototype.init = function(callback){
 // initialize the Motive instance with a configuration
 Motive.prototype.configure = function(config){
 	var key, i;
+
+	if( typeof config.templates == 'undefined' ){
+		config.templates = {};
+	}
 
 	// capture static variables
 	if( typeof config.templateEngine != 'undefined' ){
@@ -185,9 +280,14 @@ Motive.prototype.configure = function(config){
 	}
 	// parse dynamics as a shorthand for the standard data/reference/template wiring
 	for( key in config.dynamic ){
-		this.manage(key);
-		this.reference(key, config.dynamic[key]);
-		this.template( key, key, this.templates[key], this.templateEngine );
+		this.manage(key); // data part
+		this.reference(key, config.dynamic[key]); // html element part
+		if( !exists( this.templates[key] ) ){
+			var selector = config.dynamic[key];
+				config.templates[key] = this.$(selector).html();
+				this.$(selector).html('');
+		}
+		this.template( key, key, this.templates[key], this.templateEngine ); // this part data-binds to drive the template redraw
 	}
 	// run an init function if specified
 	if( config.init ){

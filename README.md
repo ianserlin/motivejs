@@ -6,11 +6,12 @@ Brutally simple micro-architecture for professional client-side javascript appli
 Features
 --------
 
-- transparent data-binding
+- transparent data-binding, including modifications to arrays
 - one-liner for powering dynamic components like lists, details views
 - handle user actions in a consistent manner
 - maintain references to view components easily
 - supports any template engine with a compile and a render function, which yours probably does, and probably should
+- easy extension mechanism
 
 Dependencies
 ------------
@@ -63,3 +64,9 @@ Todo
 <pre><code>
 
 </code></pre>
+
+Todos
+--------
+
+- methods for un-everything
+- deep-property data-binding
