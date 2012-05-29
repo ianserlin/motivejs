@@ -119,7 +119,7 @@ Motive.prototype.reference = function(name, selector){
 Motive.prototype.template = function(componentName, dataName, template, engine){
 	// todo support selectors instead of named keys into references
 	// for the component name
-	template 				= '{{#data}}'+template+'{{/data}}';
+	// template 				= '{{#data}}'+template+'{{/data}}';
 	var component 			= this.references[componentName],
 		compiledTemplate 	= engine.compile(template),
 		templateSpec = {
@@ -158,7 +158,7 @@ Motive.prototype.action = function(componentName, eventName, callback){
 Motive.prototype._generateWrapperFunction = function(fn){
 	var self = this;
 	return function(){
-		fn.apply(self,arguments);
+		return fn.apply(self,arguments);
 	}
 };
 
