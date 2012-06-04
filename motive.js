@@ -199,9 +199,10 @@ Motive.prototype._extendArray = function(arr, callback, motive){
 
 	function generateOverloadedFunction(target, methodName, self){
 		return function(){
-			var oldValue = Array.prototype.concat.apply(arr);
-			Array.prototype[methodName].apply(target, arguments);
+			var oldValue = Array.prototype.concat.apply(target);
+			var newValue = Array.prototype[methodName].apply(target, arguments);
 			target.updated(oldValue, motive);
+			return newValue;
 		};
 	} 
 	arr.updated = function(oldValue, self){
@@ -245,7 +246,7 @@ Motive.prototype.configure = function(config){
 		for( var key in this.templates ){
 			if( this.templates[key].match(/^#/) != null ){
 				var selector = this.templates[key];
-				this.templates[key] = this.$(selector).html();
+				this.templates[key] = this.templateEngine.compile(this.$(selector).html());
 				this.$(selector).html('');
 			}
 		}
