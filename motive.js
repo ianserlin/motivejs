@@ -267,12 +267,6 @@ Motive.prototype.configure = function(config){
 						config.template[key].template, 
 						this.templateEngine );
 	}
-	// binding config
-	for( key in config.bind ){
-		for( i = 0; i < config.bind[key].length; i++ ){
-			this.bind(key, config.bind[key][i]);
-		}
-	}	
 	// connect user actions to handlers
 	for( key in config.action ){
 		for( var eventKey in config.action[key] ){
@@ -290,6 +284,12 @@ Motive.prototype.configure = function(config){
 		}
 		this.template( key, key, this.templates[key], this.templateEngine ); // this part data-binds to drive the template redraw
 	}
+		// binding config
+	for( key in config.bind ){
+		for( i = 0; i < config.bind[key].length; i++ ){
+			this.bind(key, config.bind[key][i]);
+		}
+	}	
 	// run an init function if specified
 	if( config.init ){
 		this.init(config.init);
